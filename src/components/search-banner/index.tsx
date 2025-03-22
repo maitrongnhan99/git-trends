@@ -39,14 +39,6 @@ const SearchBanner: FC = () => {
                 </button>
               </div>
             </div>
-            <div className="flex items-center gap-x-6">
-              <a href="#" className="text-sm/6 font-semibold text-white">
-                Popular repositories <span aria-hidden="true">→</span>
-              </a>
-              <a href="#" className="text-sm/6 font-semibold text-white">
-                Advanced search <span aria-hidden="true">→</span>
-              </a>
-            </div>
           </div>
           <svg
             viewBox="0 0 1024 1024"
