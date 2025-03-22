@@ -11,9 +11,8 @@ const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="system"
-      enableSystem
-      enableColorScheme
+      defaultTheme="light"
+      storageKey="theme"
     >
       {children}
     </NextThemesProvider>

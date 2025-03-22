@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
+    "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/app/**/*.{js,ts,jsx,tsx}",
   ],
   darkMode: "class",
   theme: {
@@ -27,17 +27,9 @@ module.exports = {
   },
   plugins: [],
   safelist: [
+    // Allow all Tailwind CSS classes
     {
-      pattern: /bg-(white|gray|blue)-(50|100|200|300|400|500|600|700|800|900)/,
-    },
-    {
-      pattern: /dark:bg-(gray|blue)-(50|100|200|300|400|500|600|700|800|900)/,
-    },
-    {
-      pattern: /text-(gray|blue)-(50|100|200|300|400|500|600|700|800|900)/,
-    },
-    {
-      pattern: /dark:text-(gray|blue)-(50|100|200|300|400|500|600|700|800|900)/,
+      pattern: /.*/,
     },
   ],
 };
