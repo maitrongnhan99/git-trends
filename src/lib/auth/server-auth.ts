@@ -106,14 +106,20 @@ export async function getCurrentUserAction() {
     const cookieStore = await cookies();
     const token = cookieStore.get("auth-token")?.value;
 
+    console.log("🔄 Token:", token);
+
     if (!token) {
+      console.log("🔄 No token found on server-auth");
       return { user: null };
     }
 
     // Verify token
     const payload = verifyToken(token);
 
+    console.log("🔄 Payload:", payload);
+
     if (!payload?.id) {
+      console.log("🔄 No id found on payload");
       return { user: null };
     }
 
@@ -132,9 +138,11 @@ export async function getCurrentUserAction() {
     });
 
     if (!user) {
+      console.log("🔄 No user found on server-auth");
       return { user: null };
     }
 
+    console.log("🔄 User found on server-auth:", user);
     // Convert dates to strings to match User interface
     return {
       user: {

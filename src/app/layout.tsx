@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/navbar";
-import { AuthProvider } from "@/utils/auth-context";
+import { AuthProvider } from "@/lib/auth/auth-context";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { twMerge } from "tailwind-merge";

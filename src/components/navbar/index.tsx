@@ -9,6 +9,7 @@ import { useAuth } from "@/utils/auth-context";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { FC, useEffect, useState } from "react";
+import { Else, If, Then } from "react-if";
 import { twMerge } from "tailwind-merge";
 
 interface NavbarProps {
@@ -51,15 +52,19 @@ const Navbar: FC<NavbarProps> = ({ className }) => {
             <span className="font-bold">GitTrends</span>
           </Link>
           <div className="flex items-center gap-4">
-            {isAuthenticated ? (
-              <ProfileButton />
-            ) : (
-              <>
-                <LoginButton />
-                <SignupButton />
-              </>
-            )}
             <ThemeToggle />
+
+            <If condition={isAuthenticated}>
+              <Then>
+                <ProfileButton />
+              </Then>
+              <Else>
+                <>
+                  <LoginButton />
+                  <SignupButton />
+                </>
+              </Else>
+            </If>
           </div>
         </div>
       </div>

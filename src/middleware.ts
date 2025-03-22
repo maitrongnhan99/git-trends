@@ -11,6 +11,7 @@ const publicPaths = [
   "/api/auth/signup",
   "/api/auth/signout",
   "/api/auth/me",
+  "/api/users/auth",
 ];
 
 // Routes that require authentication
@@ -23,7 +24,11 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Check if the path is an API route
-  if (pathname.startsWith("/api/") && !pathname.startsWith("/api/auth/")) {
+  if (
+    pathname.startsWith("/api/") &&
+    !pathname.startsWith("/api/auth/") &&
+    pathname !== "/api/users/auth"
+  ) {
     // Protected API endpoints always need authentication
     // Check for auth token
     const token = request.cookies.get("auth-token")?.value;
