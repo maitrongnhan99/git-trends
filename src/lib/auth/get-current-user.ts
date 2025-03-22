@@ -7,6 +7,8 @@ export const getCurrentUser = async (request: NextRequest) => {
     // Get token from cookie
     const token = request.cookies.get("auth-token")?.value;
 
+    console.log("🔄 Token:", token);
+
     if (!token) {
       return null;
     }

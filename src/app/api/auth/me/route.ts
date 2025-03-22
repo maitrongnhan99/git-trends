@@ -1,12 +1,16 @@
 import { getCurrentUser } from "@/lib/auth/get-current-user";
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * API endpoint to get current user information
+ * This endpoint checks the auth token in cookies and returns user data if authenticated
+ */
 export async function GET(request: NextRequest) {
   try {
     const user = await getCurrentUser(request);
 
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ user: null }, { status: 200 });
     }
 
     return NextResponse.json({ user }, { status: 200 });

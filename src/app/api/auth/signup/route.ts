@@ -45,6 +45,8 @@ export async function POST(request: NextRequest) {
 
     const { email, password, name } = validationResult.data;
 
+    console.log("🔄 Signing up user:", { email, password, name, prisma });
+
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -99,7 +101,7 @@ export async function POST(request: NextRequest) {
 
     // Set HTTP-only cookie
     response.cookies.set({
-      name: "auth-token",
+      name: "token",
       value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

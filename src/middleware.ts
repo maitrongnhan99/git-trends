@@ -1,55 +1,67 @@
-import { verifyToken } from "@/lib/auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-// Define paths that don't require authentication
+// Paths that don't require authentication
 const publicPaths = [
   "/",
   "/login",
+  "/signup",
+  "/about",
+  "/forgot-password",
   "/api/auth/signin",
   "/api/auth/signup",
-  "/about",
+  "/api/auth/signout",
+  "/api/auth/me",
 ];
 
-// Check if the path is public
-const isPublicPath = (path: string) => {
-  return publicPaths.some(
-    (publicPath) =>
-      path === publicPath ||
-      path.startsWith("/api/auth/") ||
-      path.startsWith("/_next/") ||
-      path.startsWith("/favicon")
-  );
-};
+// Routes that require authentication
+const protectedPaths = ["/dashboard", "/profile", "/settings", "/projects"];
 
+/**
+ * Middleware function to handle authentication
+ */
 export function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname;
+  const { pathname } = request.nextUrl;
 
-  // Allow public paths
-  if (isPublicPath(path)) {
+  // Check if the path is an API route
+  if (pathname.startsWith("/api/") && !pathname.startsWith("/api/auth/")) {
+    // Protected API endpoints always need authentication
+    // Check for auth token
+    const token = request.cookies.get("auth-token")?.value;
+
+    // If no token is present, return unauthorized
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  }
+
+  // Check if the path is public or matches static files
+  const isPublicPath = publicPaths.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`)
+  );
+  const isStaticFile =
+    /\.(jpg|jpeg|png|gif|svg|ico|js|css|woff|woff2|ttf|otf)$/i.test(pathname);
+
+  if (isPublicPath || isStaticFile) {
     return NextResponse.next();
   }
 
-  // Check for auth token
-  const token = request.cookies.get("auth-token")?.value;
+  // Check if path requires authentication
+  const needsAuth = protectedPaths.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`)
+  );
 
-  // If no token is present, redirect to login
-  if (!token) {
-    const url = new URL("/login", request.url);
-    url.searchParams.set("callbackUrl", encodeURI(request.url));
-    return NextResponse.redirect(url);
+  if (needsAuth) {
+    // Check for auth token
+    const token = request.cookies.get("auth-token")?.value;
+
+    // If no token is present, redirect to login
+    if (!token) {
+      const url = new URL("/login", request.url);
+      url.searchParams.set("redirectTo", pathname);
+      return NextResponse.redirect(url);
+    }
   }
 
-  // Verify token
-  const payload = verifyToken(token);
-
-  // If token is invalid, redirect to login
-  if (!payload) {
-    const url = new URL("/login", request.url);
-    url.searchParams.set("callbackUrl", encodeURI(request.url));
-    return NextResponse.redirect(url);
-  }
-
-  // Token is valid, proceed
   return NextResponse.next();
 }
 

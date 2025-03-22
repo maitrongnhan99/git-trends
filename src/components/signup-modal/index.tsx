@@ -1,5 +1,6 @@
 "use client";
 
+import { authApi } from "@/utils/apis";
 import {
   Dialog,
   DialogPanel,
@@ -8,13 +9,13 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FC, Fragment, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Button } from "../cores";
 
 const signupSchema = z
   .object({
@@ -47,10 +48,6 @@ const SignupModal: FC<SignupModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const { theme } = useTheme();
-
-  console.log("theme", theme);
-
   const {
     register,
     handleSubmit,
@@ -71,23 +68,11 @@ const SignupModal: FC<SignupModalProps> = ({
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          password: data.password,
-        }),
+      await authApi.signUp({
+        name: data.name,
+        email: data.email,
+        password: data.password,
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to sign up");
-      }
 
       // Reset form and close modal on success
       reset();
@@ -267,13 +252,9 @@ const SignupModal: FC<SignupModalProps> = ({
                     )}
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800 dark:text-slate-900 disabled:opacity-70"
-                  >
+                  <Button type="submit" disabled={isLoading} className="w-full">
                     {isLoading ? "Creating account..." : "Create account"}
-                  </button>
+                  </Button>
 
                   <p className="text-sm font-light text-gray-500 dark:text-slate-500">
                     Already have an account?{" "}

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -10,8 +12,60 @@
   --foreground: #ededed;
 }
 
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans, Arial, Helvetica, sans-serif);
+}
+
+/* Add transition to specific elements rather than all elements for better performance */
+body,
+button,
+div,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span {
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out, text-decoration-color 0.2s ease-in-out,
+    fill 0.2s ease-in-out, stroke 0.2s ease-in-out;
+}
+
+/* Forced dark mode for debugging */
+.force-dark {
+  color-scheme: dark !important;
+}
+
+/* Fix for Tailwind dark mode classes in development */
+@media (prefers-color-scheme: dark) {
+  .dark\:bg-gray-800 {
+    background-color: rgb(31, 41, 55);
+  }
+  .dark\:bg-gray-900 {
+    background-color: rgb(17, 24, 39);
+  }
+  .dark\:bg-gray-700 {
+    background-color: rgb(55, 65, 81);
+  }
+  .dark\:text-gray-200 {
+    color: rgb(229, 231, 235);
+  }
+  .dark\:text-gray-300 {
+    color: rgb(209, 213, 219);
+  }
+  .dark\:border-gray-700 {
+    border-color: rgb(55, 65, 81);
+  }
 }

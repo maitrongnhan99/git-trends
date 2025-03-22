@@ -1,85 +1,69 @@
 "use client";
 
-import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { LoginButton } from "@/components/login-button";
+import { Logo } from "@/components/logo";
+import { ProfileButton } from "@/components/profile-button";
+import { SignupButton } from "@/components/signup-button";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { useAuth } from "@/utils/auth-context";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { LoginButton } from "../login-button";
-import { SignupButton } from "../signup-button";
-import { ThemeToggle } from "../theme-toggle";
 
-const Navbar: FC = () => {
-  const { scrollY } = useScroll();
-  const [isScrolled, setIsScrolled] = useState(false);
+interface NavbarProps {
+  className?: string;
+}
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    // Add background effect when scrolled
-    if (latest > 50) {
-      setIsScrolled(true);
-    } else {
-      setIsScrolled(false);
-    }
-  });
+const Navbar: FC<NavbarProps> = ({ className }) => {
+  const [hasScrolled, setHasScrolled] = useState(false);
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setHasScrolled(scrollTop > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <motion.nav
+    <motion.header
       className={twMerge(
-        "fixed top-4 left-0 right-0 max-w-7xl mx-auto z-50 rounded-full border border-gray-200 transition-all duration-300 dark:border-slate-700",
-        isScrolled
-          ? "bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm shadow-md"
-          : "bg-white dark:bg-slate-800"
+        "sticky top-0 z-50 w-full transition-colors",
+        hasScrolled
+          ? "border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+          : "bg-transparent",
+        className
       )}
-      initial={{ y: 0 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.3 }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <Link href="/" className="flex">
-            <div className="flex-shrink-0 flex items-center">
-              <i className="fas fa-chart-bar text-2xl text-black dark:text-white"></i>
-              <span className="ml-2 text-xl font-bold text-black dark:text-white">
-                GitTrends
-              </span>
-            </div>
+      <div className="container mx-auto">
+        <div className="flex h-16 items-center justify-between px-4">
+          <Link
+            href="/"
+            className="flex items-center space-x-2 hover:opacity-90"
+          >
+            <Logo className="h-6 w-6" />
+            <span className="font-bold">GitTrends</span>
           </Link>
-          {/* <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-            <Link
-              href="#"
-              className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Use Cases
-            </Link>
-            <Link
-              href="#"
-              className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="#"
-              className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Company
-            </Link>
-            <Link
-              href="#"
-              className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Careers
-            </Link>
-          </div> */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
+            {isAuthenticated ? (
+              <ProfileButton />
+            ) : (
+              <>
+                <LoginButton />
+                <SignupButton />
+              </>
+            )}
             <ThemeToggle />
-            <SignupButton />
-            <LoginButton
-              className="text-gray-700 bg-transparent hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-slate-300 dark:hover:bg-slate-700 dark:focus:ring-slate-800"
-              textColorClass=""
-            />
           </div>
         </div>
       </div>
-    </motion.nav>
+    </motion.header>
   );
 };
 

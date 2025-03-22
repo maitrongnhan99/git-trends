@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 ### Dependency Management  
 - Regularly update dependencies: Ensure that all dependencies are kept up to date to benefit from security patches, performance improvements, and new features. Use tools like Dependabot, Renovate, or npm/yarn package managers to automate updates.  
